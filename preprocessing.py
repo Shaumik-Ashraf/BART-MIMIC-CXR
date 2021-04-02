@@ -48,14 +48,13 @@ for report in train_reports:
 	text = re.sub("\n", "", text);
 	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
 	data = [s.strip() for s in data]
+	if (progress % 10000 == 0):
+		print(f'Read {progress} files so far...');
+	progress += 1;
 	if( (len(data)<2) or (data[1].strip() == "") ):
 		ommitted += 1;
 		#print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
-	
-	if (progress % 10000 == 0):
-		print(f'Processed {progress} so far...');
-	progress += 1;
 	# do lematization here
 	
 	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
