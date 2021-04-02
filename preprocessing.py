@@ -29,22 +29,41 @@ TRAIN_FILE = os.path.join(ROOT, 'data', 'train.csv');
 TEST_FILE = os.path.join(ROOT, 'data', 'test.csv');
 
 
-text_files = pd.read_csv(LIST_FILE)['path']; # file paths as pandas series
-train_len = len(text_files) * (1.0 - TEST_FRACTION);
-train_files = text_files[:train_len];
-test_files = text_files[train_len:];
+print("================ Starting data preprocessing ==================");
+print(f"Reading {os.path.basename(LIST_FILE)}...");
+radiology_reports = pd.read_csv(LIST_FILE)['path']; # file paths as pandas series
+train_len = len(radiology_reports) * (1.0 - TEST_FRACTION);
+train_reports = radiology_reports[:train_len];
+test_reports = radiology_reports[train_len:];
+print("Done.");
 
-
+print("Writing train.csv...");
 f = File.open(TRAIN_FILE, 'w');
-for filename in train_files:
-	text = File.read(filename);
+for report in train_reports:
+	text = File.read(report);
 	data = text.split("IMPRESSIONS:");
 	if( (len(data)<2) or (data[1].strip().empty()) ):
+		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
 	
 	# do lematization here
 	
 	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
-	
 f.close();
+print("Done.\n");
+
+print("Writing test.csv...");
+f = File.open(TEST_FILE, 'w');
+for report in test_reports:
+	text = File.read(report);
+	data = text.split("IMPRESSIONS:");
+	if( (len(data)<2) or (data[1].strip().empty()) ):
+		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
+		continue; #toss out data and go to next textfile
 	
+	# do lematization here
+	
+	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
+f.close();
+print("Done.\n");
+print("==================== End data preprocessing ======================");
