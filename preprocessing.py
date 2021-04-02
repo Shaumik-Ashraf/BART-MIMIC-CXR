@@ -40,10 +40,11 @@ print("Done.");
 
 print("Writing train.csv...");
 f = open(TRAIN_FILE, 'w');
+f.write(f"\"subject_id\",\"study_id\",\"findings\",\"impression\"\n");
 ommitted = 0;
 progress = 1;
 for report in train_reports:
-	x = open(os.path.join(REPORTS_DIR, report))
+	x = open(os.path.join(REPORTS_DIR, report));
 	text = x.read().strip();
 	text = re.sub("\n", "", text);
 	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
@@ -53,31 +54,32 @@ for report in train_reports:
 	progress += 1;
 	if( (len(data)<2) or (data[1].strip() == "") ):
 		ommitted += 1;
-		#print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
-	# do lematization here
-	
-	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
-	#i += 1;
-	#if i > 10:
-		#break;
+	folders = report.split('/');
+	f.write(f"\"{folders[2]}\",\"{folders[3].split('.')[0]}\",\"{data[0]}\",\"{data[1]}\"\n");
 f.close();
-print(f"Ommited {ommitted} files out of {progress} total files.\n")
+print(f"Ommited {ommitted} files out of {progress} total files in train.\n")
 print("Done.\n");
-"""
 print("Writing test.csv...");
-f = File.open(TEST_FILE, 'w');
+f = open(TEST_FILE, 'w');
+f.write(f"\"subject_id\",\"study_id\",\"findings\",\"impression\"\n");
+ommitted = 0;
+progress = 1;
 for report in test_reports:
-	text = File.read(report);
-	data = re.split("IMPRESSION:");
-	if( (len(data)<2) or (data[1].strip().empty()) ):
-		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
+	x = open(os.path.join(REPORTS_DIR, report));
+	text = x.read().strip();
+	text = re.sub("\n", "", text);
+	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
+	data = [s.strip() for s in data]
+	if (progress % 10000 == 0):
+		print(f'Read {progress} files so far...');
+	progress += 1;
+	if( (len(data)<2) or (data[1].strip() == "") ):
+		ommitted += 1;
 		continue; #toss out data and go to next textfile
-	
-	# do lematization here
-	
-	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
+	folders = report.split('/');
+	f.write(f"\"{folders[2]}\",\"{folders[3].split('.')[0]}\",\"{data[0]}\",\"{data[1]}\"\n");
 f.close();
+print(f"Ommited {ommitted} files out of {progress} total files in test.\n")
 print("Done.\n");
-"""
 print("==================== End data preprocessing ======================");
