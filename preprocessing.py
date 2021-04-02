@@ -42,8 +42,9 @@ print("Writing train.csv...");
 f = open(TRAIN_FILE, 'w');
 for report in train_reports:
 	x = open(os.path.join(REPORTS_DIR, report))
-	text = x.read();
-	data = re.split("IMPRESSION:|IMPRESSIONS:|IMPRESSION|IMPRESSIONS",text);
+	text = x.read().strip();
+	re.sub("\n", "", text);
+	data = re.split("(IMPRESSION:)|(IMPRESSIONS:)",text);
 	print(data)
 	if( (len(data)<2) or (data[1].strip() == "") ):
 		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
