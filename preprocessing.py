@@ -40,24 +40,30 @@ print("Done.");
 
 print("Writing train.csv...");
 f = open(TRAIN_FILE, 'w');
-i = 0;
+ommitted = 0;
+progress = 1;
 for report in train_reports:
 	x = open(os.path.join(REPORTS_DIR, report))
 	text = x.read().strip();
 	text = re.sub("\n", "", text);
-	data = re.split("IMPRESSION:",text);  # PUT PROPER REGEX HERE LATER
-	print(data)
+	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
+	data = [s.strip() for s in data]
 	if( (len(data)<2) or (data[1].strip() == "") ):
-		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
+		ommitted += 1;
+		#print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
 	
+	if (progress % 10000 == 0):
+		print(f'Processed {progress} so far...');
+	progress += 1;
 	# do lematization here
 	
 	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
-	i += 1;
-	if i > 10:
-		break;
+	#i += 1;
+	#if i > 10:
+		#break;
 f.close();
+print(f"Ommited {ommitted} files out of {progress} total files.\n")
 print("Done.\n");
 """
 print("Writing test.csv...");
