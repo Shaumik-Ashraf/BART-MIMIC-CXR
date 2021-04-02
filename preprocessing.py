@@ -44,7 +44,7 @@ for filename in train_files:
 	
 	# do lematization here
 	
-	f.write(f"\"{data[0]}\"");
+	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
 	
 f.close();
 	
