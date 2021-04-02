@@ -19,10 +19,11 @@ REQUIREMENTS:
 
 import os;
 import pandas as pd;
+import re
 
 TEST_FRACTION = 0.3 # fraction for test set
 
-ROOT = os.dirname( os.abspath(__file__) );
+ROOT = os.path.dirname( os.path.abspath(__file__) );
 LIST_FILE = os.path.join(ROOT, 'data', 'cxr-study-list.csv.gz');
 REPORTS_DIR = os.path.join(ROOT, 'data', 'mimic-cxr-reports');
 TRAIN_FILE = os.path.join(ROOT, 'data', 'train.csv');
@@ -32,17 +33,19 @@ TEST_FILE = os.path.join(ROOT, 'data', 'test.csv');
 print("================ Starting data preprocessing ==================");
 print(f"Reading {os.path.basename(LIST_FILE)}...");
 radiology_reports = pd.read_csv(LIST_FILE)['path']; # file paths as pandas series
-train_len = len(radiology_reports) * (1.0 - TEST_FRACTION);
+train_len = int(len(radiology_reports) * (1.0 - TEST_FRACTION));
 train_reports = radiology_reports[:train_len];
 test_reports = radiology_reports[train_len:];
 print("Done.");
 
 print("Writing train.csv...");
-f = File.open(TRAIN_FILE, 'w');
+f = open(TRAIN_FILE, 'w');
 for report in train_reports:
-	text = File.read(report);
-	data = text.split("IMPRESSIONS:");
-	if( (len(data)<2) or (data[1].strip().empty()) ):
+	x = open(os.path.join(REPORTS_DIR, report))
+	text = x.read();
+	data = re.split("IMPRESSION:|IMPRESSIONS:|IMPRESSION|IMPRESSIONS",text);
+	print(data)
+	if( (len(data)<2) or (data[1].strip() == "") ):
 		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
 	
@@ -51,12 +54,12 @@ for report in train_reports:
 	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
 f.close();
 print("Done.\n");
-
+"""
 print("Writing test.csv...");
 f = File.open(TEST_FILE, 'w');
 for report in test_reports:
 	text = File.read(report);
-	data = text.split("IMPRESSIONS:");
+	data = re.split("IMPRESSION:");
 	if( (len(data)<2) or (data[1].strip().empty()) ):
 		print(f"Ommitting file {os.path.basename(report)} - no impressions section");
 		continue; #toss out data and go to next textfile
@@ -66,4 +69,5 @@ for report in test_reports:
 	f.write(f"\"{data[0]}\",\"{data[1]}\"\n");
 f.close();
 print("Done.\n");
+"""
 print("==================== End data preprocessing ======================");
