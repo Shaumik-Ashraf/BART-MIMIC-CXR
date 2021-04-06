@@ -47,6 +47,7 @@ for report in train_reports:
 	x = open(os.path.join(REPORTS_DIR, report));
 	text = x.read().strip();
 	text = re.sub("\n", "", text);
+	text = re.sub(",", "", text); # causes issues with CSV
 	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
 	data = [s.strip() for s in data]
 	if (progress % 10000 == 0):
@@ -69,6 +70,7 @@ for report in test_reports:
 	x = open(os.path.join(REPORTS_DIR, report));
 	text = x.read().strip();
 	text = re.sub("\n", "", text);
+	text = re.sub(",", "", text); # causes issues with CSV
 	data = re.split(r'impression.*(?::|" ")',text, flags=re.IGNORECASE);
 	data = [s.strip() for s in data]
 	if (progress % 10000 == 0):
