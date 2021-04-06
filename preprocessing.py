@@ -140,12 +140,18 @@ print("================ Starting data preprocessing ==================");
 print(f"Reading {os.path.basename(LIST_FILE)}...");
 radiology_reports = pd.read_csv(LIST_FILE)['path']; # file paths as pandas series
 train_reports, test_reports = split(radiology_reports, TEST_FRACTION);
+print("Done.");
+
 # if you want validation set:
 # train_reports, validation_reports = split(train_reports, 0.2);
-print("Done.");
+# write_csv(VALIDATION_FILE, validation_reports);
+
+# sanity check
+#print(train_reports);
+#print(validation_reports);
+#print(test_reports);
 
 write_csv(TRAIN_FILE, train_reports);
 write_csv(TEST_FILE, test_reports);
-#write_csv(VALIDATION_FILE, validation_reports);
 
 print("==================== End data preprocessing ======================");
