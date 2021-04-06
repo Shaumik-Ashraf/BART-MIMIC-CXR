@@ -2,9 +2,10 @@
 
 import rouge;
 import pandas as pd;
+import os;
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
-SUMMARY_FILE_NAME = "bart_summaries.csv"
+SUMMARY_FILE_NAME = "Base_Bart_Summary_100.csv"
 
 scorer = rouge.Rouge(metrics=['rouge-l'],
 		     max_n=4,
@@ -31,13 +32,12 @@ print(score);
 summary_path = os.path.join(ROOT, 'data', SUMMARY_FILE_NAME);
 df = pd.read_csv(summary_path);
 num_summaries = len(df);
-generated_summaries = df['predicted'];
+generated_summaries = df['prediction'];
 true_summaries = df['actual'];
 del df;
 
 print("Calculating scores...");
-scores = scorer.get_scores(generated_summaries, truth);
+scores = scorer.get_scores(generated_summaries, true_summaries);
 print("Done.");
 
-for i in range(num_summaries):
-	print(f"rouge-l f1-score: {scores['rouge-l']['f'][i]}");
+print(scores);
