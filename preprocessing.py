@@ -51,6 +51,12 @@ for report in train_reports:
 	idx = text.find("NOTIFICATION");
 	if( idx > 0 ):
 		text = text[:idx];
+	idx = text.find("telephone notification");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.find("Telephone notification");
+	if( idx > 0 ):
+		text = text[:idx];
 	data = re.split(r'impression.?(?::|" ")',text, flags=re.IGNORECASE);
 	data = [s.strip() for s in data]
 	if (progress % 10000 == 0):
@@ -75,6 +81,12 @@ for report in test_reports:
 	text = re.sub("\n", "", text);
 	text = re.sub(",", "", text); # causes issues with CSV
 	idx = text.find("NOTIFICATION");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.find("telephone notification");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.find("Telephone notification");
 	if( idx > 0 ):
 		text = text[:idx];
 	data = re.split(r'impression.?(?::|" ")',text, flags=re.IGNORECASE);
