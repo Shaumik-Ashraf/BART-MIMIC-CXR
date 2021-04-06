@@ -7,6 +7,8 @@ Use BART word embedder to do NLP analysis on radiology reports from MIMIC-CXR v2
 ## Install
  - install pytorch
  - conda install -c huggingface transformers
+ - conda install pandas
+ - conda install nltk
 
 ## Use
  - mkdir data
