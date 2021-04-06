@@ -4,7 +4,7 @@ Use BART word embedder to do NLP analysis on radiology reports from MIMIC-CXR v2
 
 `run_summarization.py` is from huggingface team
 
-## Install
+## Dependencies
  - install pytorch
  - conda install -c huggingface transformers==3.3.1
  - conda install pandas
