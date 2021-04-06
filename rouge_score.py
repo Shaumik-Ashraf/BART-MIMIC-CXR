@@ -31,8 +31,8 @@ print(score);
 summary_path = os.path.join(ROOT, 'data', SUMMARY_FILE_NAME);
 df = pd.read_csv(summary_path);
 num_summaries = len(df);
-generated_summaries = df['summaries'];
-true_summaries = df['truth'];
+generated_summaries = df['predicted'];
+true_summaries = df['actual'];
 del df;
 
 print("Calculating scores...");
