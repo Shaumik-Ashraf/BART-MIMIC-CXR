@@ -50,7 +50,7 @@ def load_bart(model_name='facebook/bart-large-cnn', tokenizer_name='facebook/bar
 	print("Done.");
 	print(f"Loading pretrained tokenizer {tokenizer_name}...");
 	tokenizer = BartTokenizer.from_pretrained('facebook/bart-large')
-	print("Donw.");
+	print("Done.");
 	return((model, tokenizer));
 
 def baseBart(article_to_summarize, model, tokenizer):
@@ -67,6 +67,19 @@ def baseBart(article_to_summarize, model, tokenizer):
 	summary_ids = model.generate(inputs['input_ids'], num_beams=4, max_length=25, early_stopping=True)
 	return [tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in summary_ids][0]
 
+def write_csv_row(opened_file, row, model, tokenizer):
+	"""
+	generates abstractive summary and writes it to a file in csv format, 1 summary per row
+	
+	params: opened_file - open File object, actually any IO stream implementing write() works
+		    row - a list/array containing [<subject id>, <study id>, <text to summarize>, <ground truth summary>]
+			model - trained BART model
+			tokenizer - BART tokenizer
+	returns: generated summary
+	"""
+	comp_summary = baseBart(row[2], model, tokenizer)
+	opened_file.write(f"\"{row[0]}\",\"{row[1]}\",\"{comp_summary}\",\"{row[3]}\"\n");
+	return(comp_summary);
 
 print("==================== Start abstractive summarization ======================");
 
@@ -77,19 +90,23 @@ print(f"Writing {os.path.basename(SUMMARIES_FILE)}...");
 f = open(SUMMARIES_FILE, 'w');
 f.write(f"\"subject_id\",\"study_id\",\"prediction\",\"actual\"\n");
 i = 0;
-if LIMIT==-1:
+if LIMIT==-1: # based on the limit, print progress messages appropriately
 	for row in data:
-		comp_summary = baseBart(row[2], model, tokenizer)
-		f.write(f"\"{row[0]}\",\"{row[1]}\",\"{comp_summary}\",\"{row[3]}\"\n");
-		if( i%1000 == 0 ):
-			print(f"Computed {i} summaries");
+		write_csv_row(f, row, model, tokenizer);
+		if( (i%1000 == 0) or (i+1 == LIMIT) ):
+			print(f"Computed {i+1} summaries");
+		i += 1;
+elif LIMIT < 100:
+	for row in data[:LIMIT]:
+		write_csv_row(f, row, model, tokenizer);
+		if( (i%(int(LIMIT/4)) == 0) or (i+1 == LIMIT)):
+			print(f"Computed {i+1} summaries");
 		i += 1;
 else:
 	for row in data[:LIMIT]:
-		comp_summary = baseBart(row[2], model, tokenizer)
-		f.write(f"\"{row[0]}\",\"{row[1]}\",\"{comp_summary}\",\"{row[3]}\"\n");
-		if( i%(int(LIMIT/8)) == 0 ):
-			print(f"Computed {i} summaries");
+		write_csv_row(f, row, model, tokenizer);
+		if( (i%(int(LIMIT/8)) == 0) or (i+1 == LIMIT) ):
+			print(f"Computed {i+1} summaries");
 		i += 1;
 
 f.close();
