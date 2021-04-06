@@ -5,7 +5,7 @@ import pandas as pd;
 import os;
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
-SUMMARY_FILE_NAME = "Base_Bart_Summary_100.csv"
+SUMMARY_FILE_NAME = "Base_Bart_Summary_1768.csv"
 
 scorer = rouge.Rouge(metrics=['rouge-l'],
 		     max_n=4,
@@ -36,7 +36,7 @@ generated_summaries = df['prediction'];
 true_summaries = df['actual'];
 del df;
 
-print("Calculating scores...");
+print(f"Calculating scores for {SUMMARY_FILE_NAME}...");
 scores = scorer.get_scores(generated_summaries, true_summaries);
 print("Done.");
 
