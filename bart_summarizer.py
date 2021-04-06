@@ -22,7 +22,7 @@ ROOT = os.path.dirname( os.path.abspath(__file__) );
 #VALIDATION_FILE = os.path.join(ROOT, 'data', 'validation.csv');
 TEST_FILE = os.path.join(ROOT, 'data', 'test.csv');
 
-LIMIT = 10; #set limit to -1 to do all data
+LIMIT = 1000; #set limit to -1 to do all data
 SUMMARIES_FILE = os.path.join(ROOT, 'data', f"summaries_{LIMIT}.csv");
 
 def load_file(filename):

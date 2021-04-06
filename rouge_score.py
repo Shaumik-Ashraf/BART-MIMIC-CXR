@@ -1,4 +1,7 @@
 # ROUGE implementation from: https://github.com/Diego999/py-rouge
+"""
+computes rouge-1, rouge-2, and rouge-l f1-scores, taking the average over the entire dataset
+"""
 
 import rouge;
 import pandas as pd;
@@ -7,8 +10,8 @@ import os;
 ROOT = os.path.dirname( os.path.abspath(__file__) );
 SUMMARY_FILE_NAME = "Base_Bart_Summary_1768.csv"
 
-scorer = rouge.Rouge(metrics=['rouge-l'],
-		     max_n=4,
+scorer = rouge.Rouge(metrics=['rouge-n', 'rouge-l'],
+		     max_n=2,
 		     limit_length=True,
 		     length_limit=30,
                      length_limit_type='words',
@@ -40,4 +43,7 @@ print(f"Calculating scores for {SUMMARY_FILE_NAME}...");
 scores = scorer.get_scores(generated_summaries, true_summaries);
 print("Done.");
 
-print(scores);
+#print(scores);
+for metric, results in sorted(scores.items(), key=lambda x: x[0]):
+	print(f"{metric}\t{results['f']}");
+
