@@ -22,6 +22,7 @@ import pandas as pd;
 import re
 
 TEST_FRACTION = 0.3 # fraction for test set
+VALIDATION_FRACTION = 0.2
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
 LIST_FILE = os.path.join(ROOT, 'data', 'cxr-study-list.csv.gz');
