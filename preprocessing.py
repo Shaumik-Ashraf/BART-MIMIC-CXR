@@ -21,8 +21,8 @@ import os;
 import pandas as pd;
 import re
 
-TEST_FRACTION = 0.3 # fraction for test set
-VALIDATION_FRACTION = 0.2
+TEST_FRACTION = 0.05 # fraction for test set
+VALIDATION_FRACTION = 0.05
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
 LIST_FILE = os.path.join(ROOT, 'data', 'cxr-study-list.csv.gz');
@@ -66,6 +66,8 @@ def sanitize(text):
 	text = text.strip();
 	text = re.sub("\n", "", text);
 	text = re.sub(",", "", text);
+	# Remove all text before FINDINGS: section
+	text = re.sub(r'^(.*finding.?:)',"", text, flags=re.IGNORECASE);
 	text = remove_notification_section(text);
 	return(text);
 
@@ -114,7 +116,7 @@ def write_csv(filename, reports):
 	f.write(f"\"subject_id\",\"study_id\",\"findings\",\"impression\"\n");
 	ommitted = 0;
 	progress = 1;
-	for report in train_reports:
+	for report in reports:
 		x = open(os.path.join(REPORTS_DIR, report));
 		text = x.read();
 		x.close();
@@ -144,8 +146,8 @@ train_reports, test_reports = split(radiology_reports, TEST_FRACTION);
 print("Done.");
 
 # if you want validation set:
-# train_reports, validation_reports = split(train_reports, 0.2);
-# write_csv(VALIDATION_FILE, validation_reports);
+train_reports, validation_reports = split(train_reports, TEST_FRACTION);
+write_csv(VALIDATION_FILE, validation_reports);
 
 # sanity check
 #print(train_reports);
