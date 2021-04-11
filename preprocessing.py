@@ -172,7 +172,7 @@ train_reports, test_reports = split(radiology_reports, TEST_FRACTION);
 print("Done.");
 
 # if you want validation set:
-train_reports, validation_reports = split(train_reports, VALIDATION_FRACTION);
+train_reports, validation_reports = split(train_reports, VALIDATION_FRACTION / (1 - TEST_FRACTION));
 write_csv(VALIDATION_FILE, validation_reports);
 
 # sanity check
