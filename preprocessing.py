@@ -21,8 +21,8 @@ import os;
 import pandas as pd;
 import re
 
-TEST_FRACTION = 0.05 # fraction for test set
-VALIDATION_FRACTION = 0.05
+TEST_FRACTION = 0.1 # fraction for test set
+VALIDATION_FRACTION = 0.1
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
 LIST_FILE = os.path.join(ROOT, 'data', 'cxr-study-list.csv.gz');
@@ -52,6 +52,24 @@ def remove_notification_section(text):
 	idx = text.rfind("Telephone notification");
 	if( idx > 0 ):
 		text = text[:idx];
+	idx = text.rfind("These findings were");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.rfind("Findings discussed");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.rfind("Findings were");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.rfind("This preliminary report");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.rfind("Reviewed with");
+	if( idx > 0 ):
+		text = text[:idx];
+	idx = text.rfind("A preliminary read");
+	if( idx > 0 ):
+		text = text[:idx];
 	return(text);
 
 def sanitize(text):
@@ -67,7 +85,12 @@ def sanitize(text):
 	text = re.sub("\n", "", text);
 	text = re.sub(",", "", text);
 	# Remove all text before FINDINGS: section
-	text = re.sub(r'^(.*finding.?:)',"", text, flags=re.IGNORECASE);
+	regex = r'^(.*finding.?:)'
+
+	if( re.search(regex, text, flags=re.IGNORECASE)==None ): #if no summary
+		return None;
+
+	text = re.sub(regex,"", text, flags=re.IGNORECASE);
 	text = remove_notification_section(text);
 	return(text);
 
@@ -96,7 +119,7 @@ def parse_summary(text):
 	if( re.search(regex, text, flags=re.IGNORECASE)==None ): #if no summary
 		return None;
 
-	data = re.split(r'impression.?(?::|" ")', text, flags=re.IGNORECASE);
+	data = re.split(regex, text, flags=re.IGNORECASE);
 	data[0] = data[0].strip();
 	data[1] = data[1].strip();
 
@@ -121,6 +144,9 @@ def write_csv(filename, reports):
 		text = x.read();
 		x.close();
 		text = sanitize(text);
+		if( text==None ):
+			ommitted += 1;
+			continue; #toss out data and go to next textfile
 
 		if (progress % 10000 == 0):
 			print(f'Read {progress} files so far...');
@@ -134,7 +160,7 @@ def write_csv(filename, reports):
 		folders = report.split('/');
 		f.write(f"\"{folders[2]}\",\"{folders[3].split('.')[0]}\",\"{data[0]}\",\"{data[1]}\"\n");
 	f.close();
-	print(f"Ommited {ommitted} files out of {progress} total files in train.\n")
+	print(f"Ommited {ommitted} files out of {progress} total files in dataset.\n")
 	print("Done.\n");
 
 
@@ -146,7 +172,7 @@ train_reports, test_reports = split(radiology_reports, TEST_FRACTION);
 print("Done.");
 
 # if you want validation set:
-train_reports, validation_reports = split(train_reports, TEST_FRACTION);
+train_reports, validation_reports = split(train_reports, VALIDATION_FRACTION);
 write_csv(VALIDATION_FILE, validation_reports);
 
 # sanity check
