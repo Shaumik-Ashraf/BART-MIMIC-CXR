@@ -1,6 +1,7 @@
 # Directory to hold MIMIC-CXR data
 data/
 results/
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

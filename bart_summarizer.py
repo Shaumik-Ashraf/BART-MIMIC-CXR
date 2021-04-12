@@ -8,7 +8,7 @@ data/summaries.csv can be created or overwritten
 transformers==3.3.1
 """
 
-import torch
+#import torch
 from transformers import BartModel, BartTokenizer, BartForConditionalGeneration, BartConfig
 from transformers import Trainer, TrainingArguments
 from transformers.modeling_bart import shift_tokens_right
@@ -22,7 +22,7 @@ ROOT = os.path.dirname( os.path.abspath(__file__) );
 #VALIDATION_FILE = os.path.join(ROOT, 'data', 'validation.csv');
 TEST_FILE = os.path.join(ROOT, 'data', 'test.csv');
 
-LIMIT = 1000; #set limit to -1 to do all data
+LIMIT = 11; #set limit to -1 to do all data
 SUMMARIES_FILE = os.path.join(ROOT, 'data', f"summaries_{LIMIT}.csv");
 
 def load_file(filename):
@@ -62,7 +62,7 @@ def baseBart(article_to_summarize, model, tokenizer):
 			article_to_summarize - text (string)
 	return: generated abstractive summary (string)
 	"""
-	inputs = tokenizer([article_to_summarize], max_length=1024, return_tensors='pt')
+	inputs = tokenizer([article_to_summarize], max_length=1024, truncation='do_not_truncate', return_tensors='pt')
 	
 	summary_ids = model.generate(inputs['input_ids'], num_beams=4, max_length=25, early_stopping=True)
 	return [tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in summary_ids][0]

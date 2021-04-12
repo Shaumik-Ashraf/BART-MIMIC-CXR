@@ -8,7 +8,7 @@ import pandas as pd;
 import os;
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
-SUMMARY_FILE_NAME = "Base_Bart_Summary_1768.csv"
+SUMMARY_FILE_NAME = "Summaries_Final.csv"
 
 scorer = rouge.Rouge(metrics=['rouge-n', 'rouge-l'],
 		     max_n=2,
