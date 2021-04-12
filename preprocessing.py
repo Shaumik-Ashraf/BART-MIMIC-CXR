@@ -153,7 +153,7 @@ def write_csv(filename, reports):
 		progress += 1;
 
 		data = parse_summary(text);
-		if( data==None ):
+		if( (data==None) or (data[0]=='') or (data[1]=='') ):
 			ommitted += 1;
 			continue; #toss out data and go to next textfile
 
