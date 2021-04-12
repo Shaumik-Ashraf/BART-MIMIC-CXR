@@ -44,6 +44,8 @@ from transformers.file_utils import is_offline_mode
 from transformers.trainer_utils import get_last_checkpoint, is_main_process
 from transformers.utils import check_min_version
 
+import torch
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 #check_min_version("4.5.0.dev0")
@@ -323,6 +325,7 @@ def main():
             data_files["test"] = data_args.test_file
             extension = data_args.test_file.split(".")[-1]
         datasets = load_dataset(extension, data_files=data_files)
+
     # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
     # https://huggingface.co/docs/datasets/loading_datasets.html.
 
@@ -352,6 +355,8 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
+    #Cast model to GPU
+    #model.to(device)
 
     if model.config.decoder_start_token_id is None:
         raise ValueError("Make sure that `config.decoder_start_token_id` is correctly defined")
@@ -406,7 +411,6 @@ def main():
         model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
 
         # Setup the tokenizer for targets
-        print(len(targets))
         with tokenizer.as_target_tokenizer():
             labels = tokenizer(targets, max_length=max_target_length, padding=padding, truncation=True)
 
@@ -418,6 +422,9 @@ def main():
             ]
 
         model_inputs["labels"] = labels["input_ids"]
+
+        #cast to a tensor
+        #model_inputs = {key:[torch.Tensor(x).long() for x in val] for key, val in model_inputs.items()}
         return model_inputs
 
     if training_args.do_train:
