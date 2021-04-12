@@ -46,7 +46,7 @@ from transformers.utils import check_min_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.5.0.dev0")
+#check_min_version("4.5.0.dev0")
 
 logger = logging.getLogger(__name__)
 
@@ -406,6 +406,7 @@ def main():
         model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
 
         # Setup the tokenizer for targets
+        print(len(targets))
         with tokenizer.as_target_tokenizer():
             labels = tokenizer(targets, max_length=max_target_length, padding=padding, truncation=True)
 

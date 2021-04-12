@@ -1,0 +1,1 @@
+python transformers/seq2seq/run_summarization.py --model_name facebook/bart-large-cnn --tokenizer_name facebook/bart-large --output_dir output --train_file data/train.csv --validation_file data/validation.csv --test_file data/test.csv --text_column findings --summary_column impression --max_source_length 1024 --max_target_length 25 --num_beams 4 --do_train --do_eval --do_predict
