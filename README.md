@@ -1,6 +1,6 @@
 # BART-MIMIC-CXR
 
-We use BART word embedder to do the abstractive summarization NLP task on radiology reports from MIMIC-CXR v2.0.0.
+Use BART word embedder to do the abstractive summarization NLP task on radiology reports from MIMIC-CXR v2.0.0.
 
 ## Use:
  - clone this repository
