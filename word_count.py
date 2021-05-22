@@ -8,7 +8,7 @@ import numpy as np;
 import os;
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
-SUMMARY_FILE_NAME = "Summaries_Final_Truncated.csv"
+SUMMARY_FILE_NAME = "extractive_summaries.csv"
 COMPUTE_FOR_TRUTH = False; #only possible with CSV format
 
 def word_count(s):

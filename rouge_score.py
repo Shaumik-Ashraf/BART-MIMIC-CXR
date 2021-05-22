@@ -8,7 +8,7 @@ import pandas as pd;
 import os;
 
 ROOT = os.path.dirname( os.path.abspath(__file__) );
-SUMMARY_FILE_NAME = "Summaries_Final_Truncated.csv"
+SUMMARY_FILE_NAME = "extractive_summaries.csv"
 
 scorer = rouge.Rouge(metrics=['rouge-n', 'rouge-l'],
 		     max_n=2,
@@ -33,7 +33,7 @@ print(score);
 """
 
 summary_path = os.path.join(ROOT, 'data', SUMMARY_FILE_NAME);
-df = pd.read_csv(summary_path);
+df = pd.read_csv(summary_path, na_values=" ");
 num_summaries = len(df);
 generated_summaries = df['prediction'];
 true_summaries = df['actual'];
